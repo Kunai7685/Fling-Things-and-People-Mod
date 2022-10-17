@@ -1,1 +1,49 @@
-
+local Player = game.Players.LocalPlayer
+local NormalSpeed = Player.Character.Humanoid.WalkSpeed
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local booleans = {
+	AnchoredDebounce = false;
+}
+UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+	if gameProcessedEvent then
+		return
+	end
+	if input.KeyCode == Enum.KeyCode.F then
+		if workspace:FindFirstChild("GrabParts") then
+			local GrabParts = workspace:FindFirstChild("GrabParts")
+			--> Inside The GrabParts
+			local DragPart = GrabParts:FindFirstChild("DragPart")
+			local GrabPart = GrabParts:FindFirstChild("GrabPart")
+			local BeamPart = GrabParts:FindFirstChild("BeamPart")
+			local BodyVelocity
+			local speed = 0
+			-- Act ::
+			if booleans.AnchoredDebounce == false then
+				booleans.AnchoredDebounce = true
+				BodyVelocity = Instance.new("BodyVelocity", GrabPart)
+				BodyVelocity.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
+				while BodyVelocity do
+					game:GetService("RunService").RenderStepped:Wait()
+					speed += 50
+					if BodyVelocity then
+						BodyVelocity.Velocity = Player:GetMouse().Hit.LookVector * speed
+					end
+				end
+			else
+				booleans.AnchoredDebounce = false
+				if workspace:FindFirstChild("GrabParts").GrabPart:FindFirstChild("BodyVelocity") then
+					workspace:FindFirstChild("GrabParts").	GrabPart:FindFirstChild("BodyVelocity"):Destroy()
+				end
+			end
+		end	
+	end
+end)
+while true do game:GetService("RunService").RenderStepped:Wait()
+	if booleans.AnchoredDebounce == true then
+		if workspace:FindFirstChild("GrabParts") then
+		else
+			booleans.AnchoredDebounce = false
+		end
+	end
+end
